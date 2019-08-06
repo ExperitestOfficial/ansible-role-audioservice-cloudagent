@@ -18,6 +18,7 @@ Role Variables
 |------|-------------|:----:|:-----:|:-----:|
 | state | should the application be present or absent | present, absent | present | no |
 | installation_folder | the folder in which the audio service will be installed | string | for mac: /Applications/Experitest/cloud-agent-version <br> for windows: C:\\Experitest\\cloud-agent-version  | no |
+| autologin_pass | password for auto login | strings |  | yes |
 
 
 Example Playbook

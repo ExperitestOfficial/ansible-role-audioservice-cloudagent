@@ -1,0 +1,37 @@
+---
+
+# validation
+
+- name: assert all vars are set
+  assert: { that: "{{ item }} != '' " }
+  with_items:
+  - installation_root_folder
+
+# tarck current version
+
+- name: check version and set installation folder
+  block:
+
+    - name: test for current installation version
+      stat:
+        path: "{{ installation_root_folder }}/cloudagent-current"
+      register: current_exists
+    
+    - name: load current_version from remote file
+      slurp:
+        src: "{{ installation_root_folder }}/cloudagent-current"
+      register: current_file
+      when: 
+        - current_exists.stat.exists
+
+    - name: check status of current installation version
+      fail:
+        msg: "current installation file not found, please add installation_folder path in playbook"
+      when: current_exists.stat.exists == False     
+
+    - name: set installation_folder path
+      set_fact:
+        installation_folder: "{{ installation_root_folder }}/cloudagent-{{ current_file['content']|b64decode }}"
+
+  when: installation_folder is not defined or installation_folder is none
+    

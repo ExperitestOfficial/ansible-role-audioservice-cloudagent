@@ -1,0 +1,4 @@
+
+- src: git+https://github.com/ExperitestOfficial/ansible-role-audioservice-cloudagent.git
+  version: master
+  name: audioservice-cloudagent

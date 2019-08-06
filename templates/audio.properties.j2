@@ -1,0 +1,11 @@
+spring.main.banner-mode=off
+logging.config={{ installation_folder }}/conf/logback-audio.xml
+logging.file={{ installation_folder }}/logs/audio-service.log
+
+spring.mvc.log-resolved-exception=true
+
+spring.servlet.multipart.enabled = false
+
+server.address = 127.0.0.1
+
+server.port = {{ audio_port }}

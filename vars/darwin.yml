@@ -1,0 +1,18 @@
+installation_root_folder: /Applications/Experitest
+
+temp_folder: "/tmp/experitest"
+
+app_name: audiosupport
+
+service_name: "com.experitest.{{ app_name }}"
+
+service_plist_file_path: "~/Library/LaunchAgents/{{ service_name }}.plist"
+
+launcher_file_name: audiostart.sh
+
+audio_port: 35555
+
+start_after_install: True
+
+mac_version: "{{ ansible_distribution_version.split('.')[0] }}.{{ ansible_distribution_version.split('.')[1] }}"
+

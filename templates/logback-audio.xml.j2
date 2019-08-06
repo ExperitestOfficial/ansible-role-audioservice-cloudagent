@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- NOTE ON FILE MODIFICATIONS: -->
+<!-- If you make any local changes to this file, they will be gone in the next cloud upgrade. -->
+<!-- To make permanent changes, write them in conf/logback-audio-local.xml -->
+<!-- The contents of this file should be enclosed in <included></included> tags. -->
+<!-- Example contents of logback-audio-local.xml:
+    <included>
+        <logger name="com.experitest" level="trace"/>
+    </included>
+ -->
+    <configuration scan="true" scanPeriod="10 seconds">
+
+
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>{{ installation_folder }}/logs/audio-service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>{{ installation_folder }}/logs/audio-service-%i.log</fileNamePattern>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%-90(%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %-30([%t]) %logger{0}) %m%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.experitest" level="debug"/>
+
+    <root level="warn">
+        <appender-ref ref="ROLLING"/>
+    </root>
+
+    <include optional="true" file="{{ installation_folder }}/conf/logback-audio-local.xml"/>
+</configuration>

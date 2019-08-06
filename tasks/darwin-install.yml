@@ -1,0 +1,117 @@
+
+# validation
+
+- name: assert all vars are set
+  assert: { that: "{{ item }} != '' " }
+  with_items:
+  - app_name
+  - service_name
+  - installation_folder
+  - launcher_file_name
+  - audio_port
+  - service_plist_file_path
+  - ansible_user_id
+  - ansible_password
+  - temp_folder
+
+# required dependencies
+
+- name: make sure java is installed on the machine
+  command: "/usr/bin/java -version"
+  register: java_test
+  ignore_errors: yes
+
+- name: fail if java is not found
+  fail:
+    msg: "java must be installed"
+  when: java_test.rc != 0
+
+# set temp and logs folder
+
+- name: make sure temp folder exists
+  file:
+    path: "{{ temp_folder }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: make sure logs folder exists
+  file:
+    path: "{{ installation_folder }}/logs"
+    state: directory
+    mode: 0777
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: make sure LaunchAgents folder exists
+  file:
+    path: "~/Library/LaunchAgents"
+    state: directory
+    mode: 0755
+    owner: "{{ ansible_user_id }}"
+
+# stop old service
+
+- name: stop the old service
+  command: "launchctl unload {{ service_plist_file_path }}"
+  ignore_errors: yes
+
+# copy files to scipts folder
+
+- name: copy autologin files to temp folder
+  copy:
+    src: "{{item}}"
+    dest: "{{ temp_folder }}"
+    mode: '0777'
+  with_items:
+    ['enable_autologin','kcpassword']
+  
+
+# enable autologin
+
+- name: enable autologin
+  command:  "sudo /bin/sh enable_autologin {{ ansible_user_id }} {{ ansible_password }}"
+  args:
+    chdir: "{{ temp_folder }}"
+  notify:
+    - start the service
+
+
+# configure audio properties
+
+- name: copy audio.properties file
+  template:
+    src: audio.properties.j2
+    dest: "{{ installation_folder }}/conf/audio.properties"
+    group: admin
+    mode: '0777'
+  become: yes
+
+- name: copy logback-audio.xml file
+  template:
+    src: logback-audio.xml.j2
+    dest: "{{ installation_folder }}/conf/logback-audio.xml"
+    group: admin
+    mode: '0777'
+  become: yes
+
+- name: copy launcher file
+  template:
+    src: audiostart.sh.j2
+    dest: "{{ installation_folder }}/{{ launcher_file_name }}"
+    group: admin
+    mode: '0777'
+  become: yes
+
+# copy audio plist
+
+- name: copy audio plist
+  template:
+    src: audiosupport.plist.j2
+    dest: "{{ service_plist_file_path }}"
+    owner: "{{ ansible_user_id }}"
+    group: staff
+    mode: '0755'
+
+
+

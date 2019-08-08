@@ -9,7 +9,9 @@ Requirements
 This role assumes that you have java 8 installed on the instance <br>
 Cloud Agent should be installed on mac with version 12.7 or above <br>
 Supports mac os hosts only, distribution 10.14 or above
-
+Required audio input to be connected prior to the installation, UI approval during installation and audio service restart afterwards
+The service that will require reload will be situated in ~/Library/LaunchAgents/com.experitest.audioservice.plist
+Service reload is also required after every audio input device connection
 
 Role Variables
 --------------

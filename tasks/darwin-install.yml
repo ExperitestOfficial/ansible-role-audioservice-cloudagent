@@ -14,18 +14,6 @@
   - autologin_pass
   - temp_folder
 
-# required dependencies
-
-- name: make sure java is installed on the machine
-  command: "/usr/bin/java -version"
-  register: java_test
-  ignore_errors: yes
-
-- name: fail if java is not found
-  fail:
-    msg: "java must be installed"
-  when: java_test.rc != 0
-
 # set temp and logs folder
 
 - name: make sure temp folder exists
@@ -49,6 +37,38 @@
     state: directory
     mode: 0755
     owner: "{{ ansible_user_id }}"
+
+# install java dependency
+
+- name: download java from s3 url
+  get_url:
+    url: "{{ java_download_url }}"
+    dest: "{{ temp_folder }}/{{ java_download_filename }}"
+    timeout: "{{ download_timeout | default(60) }}"
+
+- name: make sure java installation folder exists
+  file:
+    path: "{{ java_installation_folder }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: unzip java file
+  command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
+  args:
+    creates: "{{ java_bin }}"
+  become: yes
+
+- name: make sure java is installed on the machine
+  command: "{{ java_bin }} -version"
+  register: java_test
+  become: yes
+  ignore_errors: yes
+
+- name: fail if java is not found
+  fail:
+    msg: java must be accesible in path
+  when: java_test.rc != 0
 
 # stop old service
 

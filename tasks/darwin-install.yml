@@ -133,5 +133,12 @@
     group: staff
     mode: '0755'
 
+# add plist to audio-support folder for debugging
 
-
+- name: add plist to audio-support folder
+  template:
+    src: audiosupport.plist.j2
+    dest: "{{ installation_folder }}/audio-support/{{ service_name }}.plist"
+    group: admin
+    mode: '0755'
+  become: yes

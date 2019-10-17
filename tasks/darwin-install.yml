@@ -13,6 +13,7 @@
   - ansible_user_id
   - autologin_pass
   - temp_folder
+  - java_bin
 
 # set temp and logs folder
 
@@ -23,9 +24,23 @@
     owner: "{{ ansible_user_id }}"
   become: yes
 
+- name: make sure audio_installation_folder exists
+  file:
+    path: "{{ audio_installation_folder }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: make sure conf folder exists
+  file:
+    path: "{{ audio_installation_folder }}/conf"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
 - name: make sure logs folder exists
   file:
-    path: "{{ installation_folder }}/logs"
+    path: "{{ audio_installation_folder }}/logs"
     state: directory
     mode: 0777
     owner: "{{ ansible_user_id }}"
@@ -40,34 +55,58 @@
 
 # install java dependency
 
-- name: download java from s3 url
-  get_url:
-    url: "{{ java_download_url }}"
-    dest: "{{ temp_folder }}/{{ java_download_filename }}"
-    timeout: "{{ download_timeout | default(60) }}"
+- name: check if java is installed
+  stat:
+    path: "{{ java_bin }}/java"
+  register: java_exists
 
-- name: make sure java installation folder exists
-  file:
-    path: "{{ java_installation_folder }}"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-  become: yes
+- name: install java
+  block:
 
-- name: unzip java file
-  command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
-  args:
-    creates: "{{ java_bin }}"
-  become: yes
+    - name: download java from s3 url
+      get_url:
+        url: "{{ java_download_url }}"
+        dest: "{{ temp_folder }}/{{ java_download_filename }}"
+        timeout: "{{ download_timeout | default(60) }}"
+    
+    - name: make sure java installation folder exists
+      file:
+        path: "{{ java_installation_folder }}"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+      become: yes
+    
+    - name: unzip java file
+      command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
+      args:
+        creates: "{{ java_bin }}/java"
+      become: yes
+      register: unzip_java
+      ignore_errors: yes
+    
+    - name: sleep for 25 seconds if unzip java fails
+      pause:
+        seconds: 25
+      when: unzip_java.rc != 0
+    
+    - name: rerun - unzip java file
+      command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
+      args:
+        creates: "{{ java_bin }}/java"
+      become: yes
+      when: unzip_java.rc != 0
+
+  when: not java_exists.stat.exists
 
 - name: make sure java is installed on the machine
-  command: "{{ java_bin }} -version"
+  command: "{{ java_bin }}/java -version"
   register: java_test
   become: yes
   ignore_errors: yes
 
 - name: fail if java is not found
   fail:
-    msg: java must be accesible in path
+    msg: "java must be accesible in path {{ java_bin }}"
   when: java_test.rc != 0
 
 # stop old service
@@ -102,7 +141,7 @@
 - name: copy audio.properties file
   template:
     src: audio.properties.j2
-    dest: "{{ installation_folder }}/conf/audio.properties"
+    dest: "{{ audio_installation_folder }}/conf/audio.properties"
     group: admin
     mode: '0777'
   become: yes
@@ -110,7 +149,7 @@
 - name: copy logback-audio.xml file
   template:
     src: logback-audio.xml.j2
-    dest: "{{ installation_folder }}/conf/logback-audio.xml"
+    dest: "{{ audio_installation_folder }}/conf/logback-audio.xml"
     group: admin
     mode: '0777'
   become: yes
@@ -118,7 +157,7 @@
 - name: copy launcher file
   template:
     src: audiostart.sh.j2
-    dest: "{{ installation_folder }}/{{ launcher_file_name }}"
+    dest: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
     group: admin
     mode: '0777'
   become: yes

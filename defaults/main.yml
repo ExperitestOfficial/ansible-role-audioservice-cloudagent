@@ -1,0 +1,13 @@
+---
+
+app_name: audiosupport
+
+audio_port: 35555
+
+java_version: 1.8.0_181
+
+start_after_install: True
+
+cdn_name: "devops-artifacts.experitest.com"
+
+java_download_url: "https://{{ cdn_name }}/{{ java_relative_path }}/{{ java_download_filename }}"

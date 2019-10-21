@@ -53,53 +53,10 @@
     mode: 0755
     owner: "{{ ansible_user_id }}"
 
-# install java dependency
-
-- name: check if java is installed
-  stat:
-    path: "{{ java_bin }}/java"
-  register: java_exists
-
-- name: install java
-  block:
-
-    - name: download java from s3 url
-      get_url:
-        url: "{{ java_download_url }}"
-        dest: "{{ temp_folder }}/{{ java_download_filename }}"
-        timeout: "{{ download_timeout | default(60) }}"
-    
-    - name: make sure java installation folder exists
-      file:
-        path: "{{ java_installation_folder }}"
-        state: directory
-        owner: "{{ ansible_user_id }}"
-      become: yes
-    
-    - name: unzip java file
-      command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
-      args:
-        creates: "{{ java_bin }}/java"
-      become: yes
-      register: unzip_java
-      ignore_errors: yes
-    
-    - name: sleep for 25 seconds if unzip java fails
-      pause:
-        seconds: 25
-      when: unzip_java.rc != 0
-    
-    - name: rerun - unzip java file if first fails
-      command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
-      args:
-        creates: "{{ java_bin }}/java"
-      become: yes
-      when: unzip_java.rc != 0
-
-  when: not java_exists.stat.exists
+# required java dependency
 
 - name: make sure java is installed on the machine
-  command: "{{ java_bin }}/java -version"
+  command: "{{ java_bin }} -version"
   register: java_test
   become: yes
   ignore_errors: yes

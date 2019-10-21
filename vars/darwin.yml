@@ -20,4 +20,4 @@ java_installation_folder: "{{ installation_root_folder }}/jre"
 
 java_home: "{{ java_installation_folder }}/jre{{ java_version }}.jre"
 
-java_bin: "{{ java_home }}/Contents/Home/bin"
+java_bin: "{{ java_home }}/Contents/Home/bin/java"

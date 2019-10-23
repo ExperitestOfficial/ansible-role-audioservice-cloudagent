@@ -1,8 +1,8 @@
 installation_root_folder: /Applications/Experitest
 
-temp_folder: "/tmp/experitest"
+audio_installation_folder: /Applications/Experitest/audiosupport
 
-app_name: audiosupport
+temp_folder: "/tmp/experitest"
 
 service_name: "com.experitest.{{ app_name }}"
 
@@ -10,15 +10,7 @@ service_plist_file_path: "~/Library/LaunchAgents/{{ service_name }}.plist"
 
 launcher_file_name: audiostart.sh
 
-audio_port: 35555
-
-start_after_install: True
-
 mac_version: "{{ ansible_distribution_version.split('.')[0] }}.{{ ansible_distribution_version.split('.')[1] }}"
-
-cdn_name: "devops-artifacts.experitest.com"
-
-java_version: 1.8.0_181
 
 java_download_filename: "jre{{ java_version }}-macosx-x64.tar.gz"
 
@@ -26,6 +18,6 @@ java_relative_path: "java/osx"
 
 java_installation_folder: "{{ installation_root_folder }}/jre"
 
-java_bin: "{{ java_installation_folder }}/jre{{ java_version }}.jre/Contents/Home/bin/java"
+java_home: "{{ java_installation_folder }}/jre{{ java_version }}.jre"
 
-java_download_url: "https://{{ cdn_name }}/{{ java_relative_path }}/{{ java_download_filename }}"
+java_bin: "{{ java_home }}/Contents/Home/bin/java"

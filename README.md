@@ -6,7 +6,7 @@ This role will install audio service on cloud agent for mac os hosts. It support
 Requirements
 ------------
 
-This role assumes that you have java 8 installed on the instance <br>
+[ansible-role-java8](https://github.com/ExperitestOfficial/ansible-role-java8) must be installed on all machines. <br>
 Cloud Agent should be installed on mac with version 12.7 or above <br>
 Supports mac os hosts only, distribution 10.14 or above <br>
 Required audio input to be connected prior to the installation, UI approval during installation and audio service restart afterwards <br>
@@ -19,7 +19,7 @@ Role Variables
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | state | should the application be present or absent | present, absent | present | no |
-| installation_folder | the folder in which the audio service will be installed | string | for mac: /Applications/Experitest/cloud-agent-version <br> for windows: C:\\Experitest\\cloud-agent-version  | no |
+| audio_installation_folder | the folder in which the audio service will be installed | string | for mac: /Applications/Experitest/audiosupport | no |
 | autologin_pass | password for auto login | strings |  | yes |
 
 

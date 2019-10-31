@@ -59,6 +59,7 @@
   command: "{{ java_bin }} -version"
   register: java_test
   become: yes
+  changed_when: no
   ignore_errors: yes
 
 - name: fail if java is not found

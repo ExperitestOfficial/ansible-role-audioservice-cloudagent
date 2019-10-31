@@ -38,6 +38,13 @@
     owner: "{{ ansible_user_id }}"
   become: yes
 
+- name: make sure lib folder exists
+  file:
+    path: "{{ audio_installation_folder }}/lib"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
 - name: make sure logs folder exists
   file:
     path: "{{ audio_installation_folder }}/logs"
@@ -112,11 +119,6 @@
     mode: '0777'
   become: yes
 
-- name: check if launcher file exists
-  stat:
-    path: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
-  register: launcher_exists
-
 - name: copy launcher file if not exists
   template:
     src: audiostart.sh.j2
@@ -124,15 +126,6 @@
     group: admin
     mode: '0777'
   become: yes
-  when: not launcher_exists.stat.exists
-
-- name: update existing launcher file
-  lineinfile:
-    path: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
-    line: "$JAVA_BIN -jar {{ installation_folder }}/lib/audio-support.jar \\"
-    regexp: "^\\$JAVA_BIN -jar"
-  become: yes
-  when: launcher_exists.stat.exists
 
 # copy audio plist
 
@@ -152,4 +145,14 @@
     dest: "{{ installation_folder }}/audio-support/{{ service_name }}.plist"
     group: admin
     mode: '0755'
+  become: yes
+
+# copy audio-support.jar
+
+- name: copy audio jar to audiosupport folder
+  copy:
+    src: "{{ installation_folder }}/lib/audio-support.jar"
+    dest: "{{ audio_installation_folder }}/lib/audio-support.jar"
+    force: yes
+    remote_src: yes
   become: yes

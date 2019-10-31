@@ -111,13 +111,27 @@
     mode: '0777'
   become: yes
 
-- name: copy launcher file
+- name: check if launcher file exists
+  stat:
+    path: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
+  register: launcher_exists
+
+- name: copy launcher file if not exists
   template:
     src: audiostart.sh.j2
     dest: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
     group: admin
     mode: '0777'
   become: yes
+  when: not launcher_exists.stat.exists
+
+- name: update existing launcher file
+  lineinfile:
+    path: "{{ audio_installation_folder }}/{{ launcher_file_name }}"
+    line: "$JAVA_BIN -jar {{ installation_folder }}/lib/audio-support.jar \\"
+    regexp: "^\\$JAVA_BIN -jar"
+  become: yes
+  when: launcher_exists.stat.exists
 
 # copy audio plist
 

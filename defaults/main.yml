@@ -1,10 +1,15 @@
 ---
 
+required_modifiable_fields:
+  - audio_port
+  - installation_root_folder
+  - java_version
+
 app_name: audiosupport
 
-audio_port: 35555
+__audio_port: 35555
 
-java_version: 1.8.0_181
+__java_version: 1.8.0_181
 
 start_after_install: True
 

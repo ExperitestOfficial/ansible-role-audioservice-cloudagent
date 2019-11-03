@@ -147,12 +147,13 @@
     mode: '0755'
   become: yes
 
-# copy audio-support.jar
+# create link audio-support.jar
 
-- name: copy audio jar to audiosupport folder
-  copy:
+- name: update symbolic link of audiosupport jar
+  file:
     src: "{{ installation_folder }}/lib/audio-support.jar"
     dest: "{{ audio_installation_folder }}/lib/audio-support.jar"
-    force: yes
-    remote_src: yes
+    owner: "{{ ansible_user_id }}"
+    group: admin
+    state: link
   become: yes

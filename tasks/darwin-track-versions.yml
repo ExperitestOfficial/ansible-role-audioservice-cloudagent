@@ -31,7 +31,7 @@
 
     - name: set installation_folder path
       set_fact:
-        installation_folder: "{{ installation_root_folder }}/cloudagent-{{ current_file['content']|b64decode }}"
+        installation_folder: "{{ installation_root_folder }}/cloudagent-{{ current_file['content']|b64decode | trim }}"
 
   when: installation_folder is not defined or installation_folder is none
     

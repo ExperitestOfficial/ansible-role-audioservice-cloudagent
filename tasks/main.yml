@@ -13,4 +13,6 @@
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-install.yml"
   when: state|default('present') == 'present' and ansible_os_family == "Darwin" and mac_version == "10.14"
 
-
+- name: uninstall
+  include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-uninstall.yml"
+  when: state|default('present') == 'absent' and ansible_os_family == "Darwin"

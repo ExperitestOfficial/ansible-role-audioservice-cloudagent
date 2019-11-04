@@ -9,7 +9,7 @@ Requirements
 * [ansible-role-java8](https://github.com/ExperitestOfficial/ansible-role-java8) must be installed on all machines. <br>
 * Cloud Agent should be installed on mac with version 12.7 or above to {installation_root_folder} <br>
 * Supports mac os hosts only, distribution 10.14 or above <br>
-* Required audio input to be connected prior to the installation, UI approval during installation and audio service restart afterwards <br>
+* Required audio input to be connected prior to the installation, UI approval during first installation (of each USB input device) and audio service restart afterwards <br>
 * The service that will require reload will be situated in ~/Library/LaunchAgents/com.experitest.audiosupport.plist <br>
 * Service reload is also required after every audio input device connection <br>
 

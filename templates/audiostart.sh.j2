@@ -3,6 +3,6 @@
 #JAVA_PATH=$(/usr/libexec/java_home -v 1.8)
 JAVA_BIN={{ java_bin }}
 
-$JAVA_BIN -jar {{ installation_folder }}/lib/audio-support.jar \
+$JAVA_BIN -jar {{ audio_installation_folder }}/lib/audio-support.jar \
   --spring.config.location=file:{{ audio_installation_folder }}/conf/audio.properties
 

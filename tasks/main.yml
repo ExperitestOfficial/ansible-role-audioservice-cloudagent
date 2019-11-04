@@ -6,12 +6,20 @@
 
 - name: track versions
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-track-versions.yml"
-  when: state|default('present') == 'present' and ansible_os_family == "Darwin" and mac_version == "10.14"
+  when: 
+    - state|default('present') == 'present' 
+    - ansible_os_family == "Darwin"
+    - mac_version == "10.14" or mac_version == "10.15"
 
 - name: install
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-install.yml"
-  when: state|default('present') == 'present' and ansible_os_family == "Darwin" and mac_version == "10.14"
+  when: 
+    - state|default('present') == 'present' 
+    - ansible_os_family == "Darwin"
+    - mac_version == "10.14" or mac_version == "10.15"
 
 - name: uninstall
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-uninstall.yml"
-  when: state|default('present') == 'absent' and ansible_os_family == "Darwin"
+  when: 
+    - state|default('present') == 'present' 
+    - ansible_os_family == "Darwin"

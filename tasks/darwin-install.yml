@@ -94,11 +94,12 @@
 # enable autologin
 
 - name: enable autologin
-  command:  "sudo /bin/sh enable_autologin {{ ansible_user_id }} {{ autologin_pass }}"
+  shell:  "/bin/sh enable_autologin {{ ansible_user_id }} {{ autologin_pass }}"
   args:
     chdir: "{{ temp_folder }}"
   async: 300
   poll: 5
+  become: yes
   notify:
     - start the service
 

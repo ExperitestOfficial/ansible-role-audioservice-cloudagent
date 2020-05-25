@@ -136,9 +136,8 @@
     src: audiosupport.plist.j2
     dest: "{{ service_plist_file_path }}"
     owner: "{{ ansible_user_id }}"
-    group: staff
+#   group: staff
     mode: '0755'
-  become: yes
 
 # add plist to audio-support folder for debugging
 

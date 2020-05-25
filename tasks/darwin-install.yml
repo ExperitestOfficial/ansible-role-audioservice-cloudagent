@@ -138,6 +138,7 @@
     owner: "{{ ansible_user_id }}"
     group: staff
     mode: '0755'
+  become: yes
 
 # add plist to audio-support folder for debugging
 

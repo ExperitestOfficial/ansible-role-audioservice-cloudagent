@@ -159,3 +159,20 @@
     group: admin
     state: link
   become: yes
+
+# create sym link for audio logs folder
+
+- name: remove existing audio logs folder from installation folder
+  file:
+    path: "{{ installation_folder }}/logs/audiologs"
+    state: absent
+  become: yes
+
+- name: create sym link for audio logs folder
+  file:
+    src: "{{ audio_installation_folder }}/logs"
+    dest: "{{ installation_folder }}/logs/audiologs"
+    state: link
+    mode: 0777
+    owner: "{{ ansible_user_id }}"
+  become: yes

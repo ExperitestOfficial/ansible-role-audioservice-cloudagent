@@ -9,14 +9,14 @@
   when: 
     - state|default('present') == 'present' 
     - ansible_os_family == "Darwin"
-    - mac_version == "10.14" or mac_version == "10.15"
+    - mac_version >= "10.14"
 
 - name: install
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-install.yml"
   when: 
     - state|default('present') == 'present' 
     - ansible_os_family == "Darwin"
-    - mac_version == "10.14" or mac_version == "10.15"
+    - mac_version >= "10.14"
 
 - name: uninstall
   include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-uninstall.yml"

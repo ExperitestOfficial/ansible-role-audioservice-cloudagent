@@ -12,7 +12,7 @@ launcher_file_name: audiostart.sh
 
 mac_version: "{{ ansible_distribution_version.split('.')[0] }}.{{ ansible_distribution_version.split('.')[1] }}"
 
-java_download_filename: "jre{{ java_version }}-macosx-x64.tar.gz"
+java_download_filename: "OpenJDK8U-jre_x64_mac_hotspot_{{ java_version }}.tar.gz"
 
 java_relative_path: "java/osx"
 

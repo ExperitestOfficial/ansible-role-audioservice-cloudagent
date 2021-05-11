@@ -9,7 +9,7 @@ app_name: audiosupport
 
 __audio_port: 35555
 
-__java_version: 1.8.0_221
+__java_version: 8u292-b10
 
 start_after_install: True
 
